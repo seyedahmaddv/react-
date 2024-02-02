@@ -1,35 +1,40 @@
+import React, { useEffect, useState } from 'react';
+
 // یک HOC ساده برای اضافه کردن وضعیت لاگین به یک کامپوننت
 const withAuth = (WrappedComponent) => {
-return class extends React.Component {
-constructor(props) {
-super(props);
-this.state = {
-isLoggedIn: false,
+  return (props) => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    useEffect(() => {
+      // منطق بررسی وضعیت لاگین
+      // در اینجا مثال ساده‌ای از چک کردن این است که آیا کاربر لاگین کرده یا نه
+      const checkUserLoginStatus = () => {
+        // اینجا باید منطق بررسی وضعیت لاگین شما قرار گیرد
+        // این تابع باید یک مقدار boolean برگرداند
+        // مثال: return true; یا return false;
+      };
+
+      const isLoggedIn = checkUserLoginStatus();
+      setIsLoggedIn(isLoggedIn);
+    }, []);
+
+    // اگر کاربر لاگین کرده باشد، وضعیت لاگین را به عنوان props به کامپوننت اصلی ارسال کنید
+    if (isLoggedIn) {
+      return <WrappedComponent isLoggedIn={isLoggedIn} {...props} />;
+    } else {
+      // در غیر این صورت می‌توانید یک پیام یا رفتار خاص را نمایش دهید
+      return <p>لطفاً وارد شوید</p>;
+    }
+  };
 };
-}
-componentDidMount() {
-// منطق بررسی وضعیت لاگین
-// در اینجا مثال ساده‌ای از چک کردن این است که آیا کاربر لاگین کرده یا نه
-const isLoggedIn = checkUserLoginStatus();
-this.setState({ isLoggedIn });
-}
-render() {
-// اگر کاربر لاگین کرده باشد، وضعیت لاگین را به عنوان props به کامپوننت اصلی ارسال کنید
-if (this.state.isLoggedIn) {
-return <WrappedComponent isLoggedIn={this.state.isLoggedIn} {...this.props} />;
-} else {
-// در غیر این صورت می‌توانید یک پیام یا رفتار خاص را نمایش دهید
-return <p>لطفاً وارد شوید</p>;
-}
-}
-};
-};
+
 // استفاده از HOC برای اضافه کردن وضعیت لاگین به یک کامپوننت
 const Profile = ({ isLoggedIn }) => {
-return (
-<div>
-{isLoggedIn ? <p>پروفایل کاربر</p> : <p>لطفاً وارد شوید</p>}
-</div>
-);
+  return (
+    <div>
+      {isLoggedIn ? <p>پروفایل کاربر</p> : <p>لطفاً وارد شوید</p>}
+    </div>
+  );
 };
+
 const ProfileWithAuth = withAuth(Profile);
